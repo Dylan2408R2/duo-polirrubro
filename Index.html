@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUO Polirrubro - Próximamente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --cian: #00bcc9;
+            --oscuro: #0a2e38;
+            --blanco: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--blanco);
+            color: var(--oscuro);
+        }
+        header {
+            background-color: var(--oscuro);
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+        .logo-placeholder {
+            max-width: 250px;
+            margin-bottom: 10px;
+        }
+        .hero {
+            text-align: center;
+            padding: 50px 20px;
+            background: linear-gradient(135deg, var(--oscuro) 0%, var(--cian) 100%);
+            color: white;
+        }
+        .countdown {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 10px;
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .card {
+            border: 2px solid var(--cian);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            background-color: var(--cian);
+            color: white;
+        }
+        .card i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--cian);
+        }
+        .card:hover i { color: white; }
+        
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25d366;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <!-- Aquí iría tu logo -->
+        <h1>DUO POLIRRUBRO</h1>
+        <p>Estamos preparando algo increíble para vos.</p>
+        <div class="countdown">GRAN APERTURA: MARZO 2025</div>
+    </section>
+
+    <h2 style="text-align:center; margin-top:40px;">¿Qué vas a encontrar en DUO?</h2>
+    
+    <div class="categories">
+        <div class="card">
+            <i class="fas fa-pencil-alt"></i>
+            <h3>Librería</h3>
+            <p>Todo para el cole y la oficina.</p>
+        </div>
+        <div class="card">
+            <i class="fas fa-gift"></i>
+            <h3>Regalería</h3>
+            <p>El detalle perfecto para cada ocasión.</p>
+        </div>
+        <div class="card">
+            <i class="fas fa-plug"></i>
+            <h3>Electrónica</h3>
+            <p>Cables, cargadores y accesorios.</p>
+        </div>
+        <div class="card">
+            <i class="fas fa-hammer"></i>
+            <h3>Ferretería</h3>
+            <p>Soluciones rápidas para el hogar.</p>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 40px; background: #eee;">
+        <h3>Ubicación</h3>
+        <p>Próximamente informaremos nuestra dirección exacta.</p>
+    </div>
+
+    <a href="https://wa.me/TUNUMEROAQUI" class="whatsapp-btn">
+        <i class="fab fa-whatsapp"></i> Consultanos por WhatsApp
+    </a>
+
+</body>
+</html>
