@@ -3,117 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUO Polirrubro | Apertura Marzo 2026</title>
+    <title>DUO Polirrubro | Apertura 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --cian: #00bcc9;
             --oscuro: #0a2e38;
             --blanco: #ffffff;
-            --acento: #ffdf00; /* Color para destacar ofertas/vuelta al cole */
+            --acento: #ffdf00;
         }
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: var(--blanco); color: var(--oscuro); }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; } /* Ocultamos cursor default */
+
+        body { 
+            font-family: 'Helvetica Neue', Arial, sans-serif; 
+            background-color: var(--blanco); 
+            color: var(--oscuro);
+            overflow-x: hidden;
+        }
+
+        /* --- CURSOR JELLY --- */
+        #cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--cian);
+            position: fixed;
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            transition: transform 0.1s ease;
+        }
+        #cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--cian);
+            position: fixed;
+            border-radius: 50%;
+            z-index: 9998;
+            pointer-events: none;
+            transition: transform 0.15s ease-out; /* El efecto jelly */
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .reveal { opacity: 0; transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); animation: fadeInUp 0.8s ease-out; }
+
+        /* --- DISEÑO --- */
         .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 80px 20px;
-            background: linear-gradient(135deg, var(--oscuro) 0%, #164a58 100%);
+            background: radial-gradient(circle, var(--oscuro) 0%, #051a20 100%);
             color: white;
-            border-bottom: 5px solid var(--cian);
+            padding: 20px;
+        }
+
+        .logo-container {
+            animation: float 4s ease-in-out infinite;
+            margin-bottom: 30px;
+        }
+
+        .logo-container img {
+            max-width: 280px;
+            filter: drop-shadow(0 0 15px rgba(0, 188, 201, 0.3));
         }
 
         .opening-tag {
-            background-color: var(--cian);
+            background: var(--cian);
             color: var(--oscuro);
-            padding: 8px 20px;
+            padding: 10px 25px;
             border-radius: 50px;
             font-weight: bold;
-            display: inline-block;
             margin-bottom: 20px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 0.8rem;
         }
 
-        .category-grid {
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            padding: 50px 10%;
-        }
-
-        .category-card {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 80px 10%;
             background: white;
+        }
+
+        .card {
+            padding: 40px;
+            border-radius: 25px;
+            background: #f8f9fa;
             border: 1px solid #eee;
-            border-radius: 20px;
-            padding: 30px;
             text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            transition: 0.3s;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .category-card:hover { transform: translateY(-5px); border-color: var(--cian); }
-        .category-card i { font-size: 2.5rem; color: var(--cian); margin-bottom: 15px; }
-
-        .back-to-school {
-            background-color: var(--acento);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 10px;
-            font-weight: bold;
-            color: var(--oscuro);
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-color: var(--cian);
         }
 
-        .cta-whatsapp {
-            background-color: #25d366;
+        .card i { font-size: 3rem; color: var(--cian); margin-bottom: 20px; }
+
+        .btn-ws {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25d366;
             color: white;
-            padding: 20px 40px;
-            border-radius: 50px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
             text-decoration: none;
-            display: inline-block;
-            font-weight: bold;
-            margin-top: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 100;
             transition: 0.3s;
         }
+        .btn-ws:hover { transform: scale(1.1); }
 
-        footer { text-align: center; padding: 40px; background: #f9f9f9; font-size: 0.9rem; }
+        /* Responsive */
+        @media (max-width: 768px) {
+            * { cursor: auto !important; } /* Desactivamos cursor jelly en celulares */
+            #cursor-dot, #cursor-outline { display: none; }
+            .logo-container img { max-width: 200px; }
+        }
     </style>
 </head>
 <body>
 
-    <header class="hero">
-        <div class="opening-tag">Faltan menos de 90 días</div>
-        <h1>DUO POLIRRUBRO</h1>
-        <p style="font-size: 1.2rem; max-width: 600px; margin: 20px auto;">
-            Estamos preparando el local más completo de la zona para tu vuelta a clases.
-        </p>
-        <div style="font-size: 2rem; font-weight: bold;">MARZO 2026</div>
-        <a href="https://wa.me/TU_NUMERO" class="cta-whatsapp">
-            <i class="fab fa-whatsapp"></i> RECIBIR AVISO DE APERTURA
-        </a>
-    </header>
+    <!-- Cursor Elements -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
 
-    <section class="category-grid">
-        <div class="category-card">
-            <i class="fas fa-backpack"></i>
-            <h3>Librería y Escolar</h3>
-            <p>Listas escolares completas, mochilas y artículos de dibujo.</p>
-            <div class="back-to-school">ESPECIAL MARZO</div>
+    <section class="hero">
+        <div class="logo-container">
+            <!-- Asegúrate de tener tu logo.png en el repo -->
+            <img src="logo.png" alt="DUO Polirrubro">
         </div>
-        <div class="category-card">
-            <i class="fas fa-print"></i>
-            <h3>Kiosco e Impresiones</h3>
-            <p>Fotocopias, trámites online y las mejores golosinas.</p>
-        </div>
-        <div class="category-card">
-            <i class="fas fa-tools"></i>
-            <h3>Bazar y Ferretería</h3>
-            <p>Todo lo que necesitás para arreglos rápidos en casa.</p>
-        </div>
+        <div class="opening-tag">Apertura Marzo 2026</div>
+        <h1 style="font-size: 3rem; margin-bottom: 10px;">PRÓXIMAMENTE</h1>
+        <p style="opacity: 0.8; font-size: 1.2rem;">Hoy es 26 de Dic. ¡Falta muy poco para vernos!</p>
     </section>
 
-    <footer>
-        <p>&copy; 2025 DUO Polirrubro - Próximamente en tu barrio.</p>
-    </footer>
+    <div class="grid">
+        <div class="card reveal">
+            <i class="fas fa-pencil-ruler"></i>
+            <h3>Librería Profesional</h3>
+            <p>Todo para el inicio de clases 2026. Listas completas y mochilas.</p>
+        </div>
+        <div class="card reveal">
+            <i class="fas fa-mobile-alt"></i>
+            <h3>Tecnología</h3>
+            <p>Accesorios para celulares, cargadores y periféricos de PC.</p>
+        </div>
+        <div class="card reveal">
+            <i class="fas fa-print"></i>
+            <h3>Servicios</h3>
+            <p>Impresiones láser, fotocopias y trámites digitales en el acto.</p>
+        </div>
+    </div>
 
+    <a href="https://wa.me/TUNUMERO" class="btn-ws">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // Lógica del Cursor Jelly
+        const dot = document.getElementById("cursor-dot");
+        const outline = document.getElementById("cursor-outline");
+
+        window.addEventListener("mousemove", (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // El punto sigue al mouse instantáneamente
+            dot.style.left = `${posX}px`;
+            dot.style.top = `${posY}px`;
+
+            // El contorno sigue con delay (efecto Jelly)
+            outline.animate({
+                left: `${posX - 20}px`,
+                top: `${posY - 20}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Efecto Reveal al hacer Scroll
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+
+        window.addEventListener("scroll", reveal);
+        // Ejecutar una vez al cargar por si ya estamos en medio de la página
+        reveal();
+    </script>
 </body>
 </html>
