@@ -3,107 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUO Polirrubro | Estreno 2026</title>
+    <title>DUO Polirrubro | Sistema 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --cian: #00bcc9;
             --oscuro: #0a2e38;
-            --blanco: #ffffff;
+            --win-bg: rgba(32, 32, 32, 0.85); /* Dark Mode Mica Effect */
+            --win-border: rgba(255, 255, 255, 0.1);
+            --win-accent: #0078d4; /* Azul clásico de Windows */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
 
         body { 
-            font-family: 'Inter', sans-serif; 
+            font-family: 'Segoe UI Variable', 'Segoe UI', sans-serif; 
             background-color: var(--oscuro); 
             color: white;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* --- CURSOR JELLY MORPHING --- */
-        #jelly-cursor {
-            width: 40px;
-            height: 40px;
-            background-color: var(--cian);
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 9999;
-            pointer-events: none;
-            /* Forma inicial: Cuadrado redondeado como tu logo */
-            border-radius: 12px;
-            mix-blend-mode: difference; /* Efecto de color inteligente al pasar por textos */
-            transition: width 0.3s, height 0.3s, border-radius 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* El punto central que nunca se deforma */
-        #jelly-cursor::after {
-            content: '';
-            width: 4px;
-            height: 4px;
-            background: white;
-            border-radius: 50%;
-        }
-
-        /* --- CONTENIDO --- */
-        .main-content {
+            overflow: hidden;
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
-            padding: 20px;
         }
 
-        .logo-img {
-            width: 300px;
-            margin-bottom: 2rem;
-            animation: float 6s ease-in-out infinite;
+        /* --- CURSOR JELLY --- */
+        #jelly-cursor {
+            width: 35px; height: 35px; background-color: var(--cian);
+            position: fixed; top: 0; left: 0; z-index: 10000;
+            pointer-events: none; border-radius: 10px;
+            mix-blend-mode: difference;
+            transition: width 0.2s, height 0.2s;
         }
 
-        .counter-badge {
-            background: rgba(255,255,255,0.1);
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid var(--cian);
-            font-family: monospace;
-            font-size: 1.2rem;
-            color: var(--cian);
-            margin-bottom: 1rem;
-        }
-
-        h1 { font-size: 4rem; letter-spacing: -2px; line-height: 1; margin-bottom: 1rem; }
-        p { opacity: 0.6; font-size: 1.1rem; max-width: 500px; }
-
-        .items-grid {
-            display: flex;
-            gap: 20px;
-            margin-top: 50px;
-        }
+        /* --- INTERFAZ PRINCIPAL --- */
+        .logo-img { width: 220px; margin-bottom: 30px; animation: float 6s ease-in-out infinite; }
+        
+        .items-grid { display: flex; gap: 20px; }
 
         .item {
-            padding: 15px 30px;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            padding: 20px 40px;
             border-radius: 12px;
+            border: 1px solid var(--win-border);
+            text-align: center;
             transition: 0.3s;
         }
-        .item:hover { border-color: var(--cian); background: rgba(0, 188, 201, 0.1); }
+        .item:hover { background: rgba(255,255,255,0.1); border-color: var(--cian); transform: scale(1.05); }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(2deg); }
+        /* --- VENTANA ESTILO WINDOWS 11 --- */
+        .win-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            display: none; justify-content: center; align-items: center;
+            z-index: 9000;
         }
 
-        /* Escondemos el cursor en móviles */
+        .win-dialog {
+            width: 450px;
+            background: var(--win-bg);
+            backdrop-filter: blur(25px) saturate(150%);
+            border: 1px solid var(--win-border);
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            overflow: hidden;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
+        }
+
+        .win-overlay.active { display: flex; }
+        .win-overlay.active .win-dialog { transform: scale(1); opacity: 1; }
+
+        /* Barra de título */
+        .win-header {
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Contenido del mensaje */
+        .win-body {
+            padding: 25px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .info-icon {
+            width: 45px;
+            height: 45px;
+            background: #0078d4;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(0, 120, 212, 0.4);
+        }
+
+        .win-text h2 { font-size: 18px; font-weight: 500; margin-bottom: 8px; color: #fff; }
+        .win-text p { font-size: 14px; line-height: 1.4; color: #ccc; }
+
+        /* Botonera */
+        .win-footer {
+            background: rgba(0,0,0,0.2);
+            padding: 15px 25px;
+            text-align: right;
+        }
+
+        .win-btn {
+            background: var(--win-accent);
+            color: white;
+            border: none;
+            padding: 6px 35px;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .win-btn:hover { filter: brightness(1.2); }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
         @media (max-width: 768px) {
             #jelly-cursor { display: none; }
             * { cursor: auto !important; }
+            .items-grid { flex-direction: column; }
+            .win-dialog { width: 90%; }
         }
     </style>
 </head>
@@ -111,92 +143,87 @@
 
     <div id="jelly-cursor"></div>
 
-    <section class="main-content">
-        <img src="logo.png" alt="DUO" class="logo-img">
-        
-        <div class="counter-badge" id="countdown">CARGANDO FECHA...</div>
-        
-        <h1>MARZO 2026</h1>
-        <p>Estamos equipando el polirrubro más moderno de la zona. 26 de Diciembre: faltan pocos meses.</p>
+    <img src="logo.png" alt="DUO" class="logo-img">
+    <h1 style="margin-bottom: 40px; font-weight: 300;">DUO <span style="font-weight: 800; color: var(--cian);">POLIRRUBRO</span></h1>
 
-        <div class="items-grid">
-            <div class="item">Librería</div>
-            <div class="item">Regalería</div>
-            <div class="item">Tecno</div>
+    <div class="items-grid">
+        <div class="item" onclick="openWin('libreria')" data-sound="libreria.mp3">Librería</div>
+        <div class="item" onclick="openWin('regaleria')" data-sound="regaleria.mp3">Regalería</div>
+        <div class="item" onclick="openWin('tecno')" data-sound="tecno.mp3">Tecno</div>
+    </div>
+
+    <!-- VENTANA WINDOWS 11 -->
+    <div class="win-overlay" id="winOverlay" onclick="closeWin()">
+        <div class="win-dialog" onclick="event.stopPropagation()">
+            <div class="win-header">
+                <span>Información del Sistema</span>
+                <i class="fas fa-times" style="font-size: 14px;"></i>
+            </div>
+            <div class="win-body">
+                <div class="info-icon">i</div>
+                <div class="win-text">
+                    <h2 id="winTitle">Título</h2>
+                    <p id="winDesc">Descripción...</p>
+                </div>
+            </div>
+            <div class="win-footer">
+                <button class="win-btn" onclick="closeWin()">Aceptar</button>
+            </div>
         </div>
-    </section>
+    </div>
 
     <script>
-        const cursor = document.getElementById('jelly-cursor');
-        
-        let mouseX = 0;
-        let mouseY = 0;
-        let cursorX = 0;
-        let cursorY = 0;
-        let speed = 0;
+        const info = {
+            libreria: {
+                title: "Rubro: Librería",
+                desc: "Se ha detectado una gran variedad de útiles escolares y técnicos. Listas completas para Marzo 2026 cargadas correctamente."
+            },
+            regaleria: {
+                title: "Rubro: Regalería",
+                desc: "Módulo de regalos inicializado. Stock disponible de bazar, peluches y objetos de diseño para toda ocasión."
+            },
+            tecno: {
+                title: "Rubro: Tecnología",
+                desc: "Periféricos y accesorios de alta velocidad detectados. Cargadores, cables y fundas optimizados para su uso."
+            }
+        };
 
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
+        const cursor = document.getElementById('jelly-cursor');
+        let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
+
+        window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
 
         function animate() {
-            // Calcular velocidad y distancia
             let distX = mouseX - cursorX;
             let distY = mouseY - cursorY;
-            
-            // Suavizado (Lerp)
             cursorX += distX * 0.15;
             cursorY += distY * 0.15;
-
-            // Calcular qué tan rápido se mueve para deformarlo
-            speed = Math.sqrt(distX*distX + distY*distY);
-            
-            // Deformación jelly
-            let scaleX = 1 + (speed / 100);
-            let scaleY = 1 - (speed / 150);
+            let speed = Math.sqrt(distX*distX + distY*distY);
             let rotation = Math.atan2(distY, distX) * 180 / Math.PI;
-
-            cursor.style.transform = `translate3d(${cursorX - 20}px, ${cursorY - 20}px, 0) 
-                                      rotate(${rotation}deg) 
-                                      scale(${scaleX}, ${scaleY})`;
-
-            // Cambiar forma si está quieto o moviéndose
-            if (speed > 5) {
-                cursor.style.borderRadius = "50% 20% 50% 20%"; // Forma de gota/hoja
-            } else {
-                cursor.style.borderRadius = "12px"; // Vuelve al cuadrado del logo
-            }
-
+            cursor.style.transform = `translate3d(${cursorX - 17}px, ${cursorY - 17}px, 0) rotate(${rotation}deg) scale(${1+(speed/100)}, ${1-(speed/150)})`;
             requestAnimationFrame(animate);
         }
         animate();
 
-        // Hover effect para los items
-        document.querySelectorAll('.item').forEach(item => {
-            item.addEventListener('mouseenter', () => {
-                cursor.style.width = '80px';
-                cursor.style.height = '80px';
-                cursor.style.backgroundColor = 'white';
-            });
-            item.addEventListener('mouseleave', () => {
-                cursor.style.width = '40px';
-                cursor.style.height = '40px';
-                cursor.style.backgroundColor = 'var(--cian)';
-            });
-        });
+        function openWin(key) {
+            document.getElementById('winTitle').innerText = info[key].title;
+            document.getElementById('winDesc').innerText = info[key].desc;
+            document.getElementById('winOverlay').classList.add('active');
 
-        // Countdown simple para el 1 de Marzo 2026
-        function updateCountdown() {
-            const target = new Date('March 1, 2026 00:00:00').getTime();
-            const now = new Date().getTime();
-            const diff = target - now;
-            
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            document.getElementById('countdown').innerText = `FALTAN ${days} DÍAS`;
+            // Efecto de sonido
+            const soundFile = document.querySelector(`[onclick="openWin('${key}')"]`).getAttribute('data-sound');
+            new Audio(soundFile).play().catch(e => {});
         }
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
+
+        function closeWin() {
+            document.getElementById('winOverlay').classList.remove('active');
+        }
+
+        // Hover effect
+        document.querySelectorAll('.item, .win-btn').forEach(el => {
+            el.addEventListener('mouseenter', () => { cursor.style.width = '60px'; cursor.style.height = '60px'; cursor.style.borderRadius = '50%'; });
+            el.addEventListener('mouseleave', () => { cursor.style.width = '35px'; cursor.style.height = '35px'; cursor.style.borderRadius = '10px'; });
+        });
     </script>
 </body>
 </html>
