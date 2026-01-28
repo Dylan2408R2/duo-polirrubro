@@ -9,9 +9,9 @@
         :root {
             --cian: #00bcc9;
             --oscuro: #0a2e38;
-            --win-bg: rgba(32, 32, 32, 0.85); /* Dark Mode Mica Effect */
+            --win-bg: rgba(32, 32, 32, 0.9);
             --win-border: rgba(255, 255, 255, 0.1);
-            --win-accent: #0078d4; /* Azul clásico de Windows */
+            --win-accent: #0078d4;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
@@ -38,104 +38,80 @@
         }
 
         /* --- INTERFAZ PRINCIPAL --- */
-        .logo-img { width: 220px; margin-bottom: 30px; animation: float 6s ease-in-out infinite; }
+        .logo-img { width: 180px; margin-bottom: 20px; animation: float 6s ease-in-out infinite; }
         
-        .items-grid { display: flex; gap: 20px; }
+        .items-grid { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; max-width: 900px; }
 
         .item {
             background: rgba(255,255,255,0.05);
-            padding: 20px 40px;
+            padding: 15px 30px;
             border-radius: 12px;
             border: 1px solid var(--win-border);
             text-align: center;
             transition: 0.3s;
         }
         .item:hover { background: rgba(255,255,255,0.1); border-color: var(--cian); transform: scale(1.05); }
+        
+        /* Botón especial Ver Objetos */
+        .item-ver { border: 1px solid var(--cian); background: rgba(0, 188, 201, 0.1); }
 
-        /* --- VENTANA ESTILO WINDOWS 11 --- */
+        /* --- VENTANAS ESTILO WINDOWS 11 --- */
         .win-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.6);
             display: none; justify-content: center; align-items: center;
-            z-index: 9000;
+            z-index: 9000; backdrop-filter: blur(5px);
         }
 
         .win-dialog {
-            width: 450px;
+            width: 500px; max-height: 85vh;
             background: var(--win-bg);
             backdrop-filter: blur(25px) saturate(150%);
             border: 1px solid var(--win-border);
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            overflow: hidden;
-            transform: scale(0.9);
-            opacity: 0;
+            display: flex; flex-direction: column;
+            transform: scale(0.9); opacity: 0;
             transition: 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
         }
 
         .win-overlay.active { display: flex; }
         .win-overlay.active .win-dialog { transform: scale(1); opacity: 1; }
 
-        /* Barra de título */
-        .win-header {
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            opacity: 0.8;
-        }
+        .win-header { padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; border-bottom: 1px solid var(--win-border); }
+        .win-body { padding: 20px; overflow-y: auto; flex-grow: 1; }
 
-        /* Contenido del mensaje */
-        .win-body {
-            padding: 25px;
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
+        /* Estilos Inventario */
+        .objetos-lista { display: grid; gap: 10px; margin-top: 15px; }
+        .obj-card { 
+            background: rgba(255,255,255,0.05); border-radius: 8px; padding: 12px; 
+            border: 1px solid transparent; transition: 0.2s; position: relative;
         }
+        .obj-card:hover { border-color: var(--cian); background: rgba(255,255,255,0.1); }
+        .obj-card h4 { color: var(--cian); margin-bottom: 4px; }
+        .obj-card span { font-size: 11px; opacity: 0.6; display: block; }
+        .obj-card p { font-size: 13px; margin-top: 5px; color: #ccc; }
 
-        .info-icon {
-            width: 45px;
-            height: 45px;
-            background: #0078d4;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: bold;
-            flex-shrink: 0;
-            box-shadow: 0 0 15px rgba(0, 120, 212, 0.4);
+        /* Panel Admin */
+        #admin-panel { border-top: 1px solid var(--cian); margin-top: 20px; padding-top: 15px; display: none; }
+        .admin-input { 
+            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--win-border); 
+            padding: 8px; color: white; margin-bottom: 8px; border-radius: 4px; 
         }
+        .btn-add { background: var(--cian); color: black; font-weight: bold; width: 100%; border: none; padding: 10px; border-radius: 4px; margin-top: 5px; }
+        .btn-delete { color: #ff4d4d; background: none; border: none; font-size: 12px; position: absolute; top: 10px; right: 10px; }
 
-        .win-text h2 { font-size: 18px; font-weight: 500; margin-bottom: 8px; color: #fff; }
-        .win-text p { font-size: 14px; line-height: 1.4; color: #ccc; }
-
-        /* Botonera */
-        .win-footer {
-            background: rgba(0,0,0,0.2);
-            padding: 15px 25px;
-            text-align: right;
-        }
-
-        .win-btn {
-            background: var(--win-accent);
-            color: white;
-            border: none;
-            padding: 6px 35px;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        .win-btn:hover { filter: brightness(1.2); }
+        /* Footer */
+        .win-footer { background: rgba(0,0,0,0.2); padding: 15px; text-align: right; border-top: 1px solid var(--win-border); }
+        .win-btn { background: var(--win-accent); color: white; border: none; padding: 7px 25px; border-radius: 4px; font-size: 14px; }
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
         @media (max-width: 768px) {
             #jelly-cursor { display: none; }
             * { cursor: auto !important; }
-            .items-grid { flex-direction: column; }
-            .win-dialog { width: 90%; }
+            .items-grid { flex-direction: column; padding: 20px; }
+            .win-dialog { width: 95%; }
         }
     </style>
 </head>
@@ -144,26 +120,29 @@
     <div id="jelly-cursor"></div>
 
     <img src="logo.png" alt="DUO" class="logo-img">
-    <h1 style="margin-bottom: 40px; font-weight: 300;">DUO <span style="font-weight: 800; color: var(--cian);">POLIRRUBRO</span></h1>
+    <h1 style="margin-bottom: 40px; font-weight: 300; text-align: center;">DUO <span style="font-weight: 800; color: var(--cian);">POLIRRUBRO</span></h1>
 
     <div class="items-grid">
-        <div class="item" onclick="openWin('libreria')" data-sound="libreria.mp3">Librería</div>
-        <div class="item" onclick="openWin('regaleria')" data-sound="regaleria.mp3">Regalería</div>
-        <div class="item" onclick="openWin('tecno')" data-sound="tecno.mp3">Tecno</div>
+        <div class="item" onclick="openWin('libreria')">Librería</div>
+        <div class="item" onclick="openWin('regaleria')">Regalería</div>
+        <div class="item" onclick="openWin('tecno')">Tecno</div>
+        <div class="item item-ver" onclick="openStore()">
+            <i class="fas fa-boxes"></i> Ver objetos
+        </div>
     </div>
 
-    <!-- VENTANA WINDOWS 11 -->
+    <!-- VENTANA DE INFORMACIÓN GENERAL -->
     <div class="win-overlay" id="winOverlay" onclick="closeWin()">
         <div class="win-dialog" onclick="event.stopPropagation()">
             <div class="win-header">
                 <span>Info Duo polirrubro</span>
-                <i class="fas fa-times" style="font-size: 14px;"></i>
+                <i class="fas fa-times" onclick="closeWin()"></i>
             </div>
-            <div class="win-body">
-                <div class="info-icon">i</div>
-                <div class="win-text">
-                    <h2 id="winTitle">Título</h2>
-                    <p id="winDesc">Descripción...</p>
+            <div class="win-body" style="display:flex; gap:20px;">
+                <div style="width:45px; height:45px; background:var(--win-accent); border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; flex-shrink:0;">i</div>
+                <div>
+                    <h2 id="winTitle" style="font-size:18px; margin-bottom:8px;">Título</h2>
+                    <p id="winDesc" style="font-size:14px; color:#ccc; line-height:1.4;">Descripción...</p>
                 </div>
             </div>
             <div class="win-footer">
@@ -172,22 +151,127 @@
         </div>
     </div>
 
+    <!-- VENTANA DE INVENTARIO (STORE) -->
+    <div class="win-overlay" id="winStore" onclick="closeStore()">
+        <div class="win-dialog" style="width: 600px;" onclick="event.stopPropagation()">
+            <div class="win-header">
+                <span>Catálogo de Objetos - DUO 2026</span>
+                <i class="fas fa-times" onclick="closeStore()"></i>
+            </div>
+            <div class="win-body">
+                <div id="login-trigger" style="font-size: 10px; opacity: 0.3; text-align: right; margin-bottom: 10px;" onclick="promptLogin()">Admin Access</div>
+                
+                <div class="objetos-lista" id="lista-objetos">
+                    <!-- Los objetos se cargan aquí -->
+                </div>
+
+                <!-- Panel Admin (Solo visible para Dylan) -->
+                <div id="admin-panel">
+                    <h3 style="color: var(--cian); font-size: 14px; margin-bottom: 10px;">Publicar nuevo objeto</h3>
+                    <input type="text" id="add-nombre" class="admin-input" placeholder="Nombre del objeto">
+                    <input type="text" id="add-codigo" class="admin-input" placeholder="Código (ej: LIB-01)">
+                    <textarea id="add-desc" class="admin-input" placeholder="Descripción detallada"></textarea>
+                    <button class="btn-add" onclick="subirObjeto()">Publicar en Catálogo</button>
+                </div>
+            </div>
+            <div class="win-footer">
+                <button class="win-btn" onclick="closeStore()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // --- BASE DE DATOS LOCAL ---
+        let objetos = JSON.parse(localStorage.getItem('duo_objetos')) || [
+            {nombre: "Cuaderno A4", codigo: "LIB-001", desc: "Tapa dura, 100 hojas rayadas."},
+            {nombre: "Auriculares Bluetooth", codigo: "TEC-042", desc: "Alta fidelidad, batería 20hs."}
+        ];
+        let esAdmin = false;
+
         const info = {
-            libreria: {
-                title: "Rubro: Librería",
-                desc: "Gran variedad de útiles escolares y técnicos. Listas completas para Marzo 2026."
-            },
-            regaleria: {
-                title: "Rubro: Regalería",
-                desc: "Módulo de regalos inicializado. Stock disponible de bazar, peluches y objetos de diseño para toda ocasión."
-            },
-            tecno: {
-                title: "Rubro: Tecnología",
-                desc: "Periféricos y accesorios de alta velocidad. Cargadores, cables y fundas optimizados para su uso."
-            }
+            libreria: { title: "Rubro: Librería", desc: "Útiles escolares y técnicos. Listas completas 2026." },
+            regaleria: { title: "Rubro: Regalería", desc: "Bazar, peluches y objetos de diseño." },
+            tecno: { title: "Rubro: Tecnología", desc: "Periféricos y accesorios de alta velocidad." }
         };
 
+        // --- LÓGICA DE VENTANAS ---
+        function openWin(key) {
+            document.getElementById('winTitle').innerText = info[key].title;
+            document.getElementById('winDesc').innerText = info[key].desc;
+            document.getElementById('winOverlay').classList.add('active');
+        }
+
+        function closeWin() { document.getElementById('winOverlay').classList.remove('active'); }
+
+        function openStore() {
+            renderObjetos();
+            document.getElementById('winStore').classList.add('active');
+        }
+
+        function closeStore() { document.getElementById('winStore').classList.remove('active'); }
+
+        // --- LÓGICA DE OBJETOS ---
+        function renderObjetos() {
+            const contenedor = document.getElementById('lista-objetos');
+            contenedor.innerHTML = '';
+
+            objetos.forEach((obj, index) => {
+                const card = document.createElement('div');
+                card.className = 'obj-card';
+                card.onclick = () => {
+                    const slug = obj.nombre.toLowerCase().replace(/ /g, "-");
+                    window.location.href = window.location.origin + "/" + slug;
+                };
+
+                card.innerHTML = `
+                    <span>CÓDIGO: ${obj.codigo}</span>
+                    <h4>${obj.nombre}</h4>
+                    <p>${obj.desc}</p>
+                    ${esAdmin ? `<button class="btn-delete" onclick="eliminarObjeto(event, ${index})"><i class="fas fa-trash"></i></button>` : ''}
+                `;
+                contenedor.appendChild(card);
+            });
+        }
+
+        // --- SISTEMA ADMIN (DYLAN) ---
+        function promptLogin() {
+            const user = prompt("Usuario:");
+            const pass = prompt("Contraseña:");
+            if(user === "Dylan2408R" && pass === "2702") {
+                esAdmin = true;
+                document.getElementById('admin-panel').style.display = 'block';
+                document.getElementById('login-trigger').innerText = "MODO ADMINISTRADOR ACTIVO";
+                renderObjetos();
+            } else {
+                alert("Acceso denegado");
+            }
+        }
+
+        function subirObjeto() {
+            const nombre = document.getElementById('add-nombre').value;
+            const codigo = document.getElementById('add-codigo').value;
+            const desc = document.getElementById('add-desc').value;
+
+            if(nombre && codigo && desc) {
+                objetos.push({nombre, codigo, desc});
+                localStorage.setItem('duo_objetos', JSON.stringify(objetos));
+                renderObjetos();
+                document.getElementById('add-nombre').value = '';
+                document.getElementById('add-codigo').value = '';
+                document.getElementById('add-desc').value = '';
+            }
+        }
+
+        function eliminarObjeto(e, index) {
+            e.stopPropagation();
+            if(confirm("¿Eliminar este objeto?")) {
+                objetos.splice(index, 1);
+                localStorage.setItem('duo_objetos', JSON.stringify(objetos));
+                renderObjetos();
+            }
+        }
+
+        // --- CURSOR JELLY ---
         const cursor = document.getElementById('jelly-cursor');
         let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
 
@@ -205,25 +289,25 @@
         }
         animate();
 
-        function openWin(key) {
-            document.getElementById('winTitle').innerText = info[key].title;
-            document.getElementById('winDesc').innerText = info[key].desc;
-            document.getElementById('winOverlay').classList.add('active');
-
-            // Efecto de sonido
-            const soundFile = document.querySelector(`[onclick="openWin('${key}')"]`).getAttribute('data-sound');
-            new Audio(soundFile).play().catch(e => {});
+        // Hover interactivo para el cursor
+        function refreshCursorInteractions() {
+            document.querySelectorAll('.item, .win-btn, .obj-card, .btn-add, .fas').forEach(el => {
+                el.addEventListener('mouseenter', () => { 
+                    cursor.style.width = '60px'; cursor.style.height = '60px'; 
+                    cursor.style.borderRadius = '50%'; cursor.style.backgroundColor = 'rgba(0, 188, 201, 0.5)';
+                });
+                el.addEventListener('mouseleave', () => { 
+                    cursor.style.width = '35px'; cursor.style.height = '35px'; 
+                    cursor.style.borderRadius = '10px'; cursor.style.backgroundColor = 'var(--cian)';
+                });
+            });
         }
+        refreshCursorInteractions();
+        
+        // Observador para nuevos elementos (como las cards de objetos)
+        const observer = new MutationObserver(refreshCursorInteractions);
+        observer.observe(document.body, { childList: true, subtree: true });
 
-        function closeWin() {
-            document.getElementById('winOverlay').classList.remove('active');
-        }
-
-        // Hover effect
-        document.querySelectorAll('.item, .win-btn').forEach(el => {
-            el.addEventListener('mouseenter', () => { cursor.style.width = '60px'; cursor.style.height = '60px'; cursor.style.borderRadius = '50%'; });
-            el.addEventListener('mouseleave', () => { cursor.style.width = '35px'; cursor.style.height = '35px'; cursor.style.borderRadius = '10px'; });
-        });
     </script>
 </body>
 </html>
