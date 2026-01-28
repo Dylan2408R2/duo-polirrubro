@@ -52,10 +52,10 @@
         }
         .item:hover { background: rgba(255,255,255,0.1); border-color: var(--cian); transform: scale(1.05); }
         
-        /* Botón especial Ver Objetos */
+        /* Botón Ver Objetos */
         .item-ver { border: 1px solid var(--cian); background: rgba(0, 188, 201, 0.1); }
 
-        /* --- VENTANAS ESTILO WINDOWS 11 --- */
+        /* --- VENTANAS --- */
         .win-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6);
@@ -96,8 +96,9 @@
         #admin-panel { border-top: 1px solid var(--cian); margin-top: 20px; padding-top: 15px; display: none; }
         .admin-input { 
             width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--win-border); 
-            padding: 8px; color: white; margin-bottom: 8px; border-radius: 4px; 
+            padding: 8px; color: white; margin-bottom: 8px; border-radius: 4px; outline: none;
         }
+        .admin-input:focus { border-color: var(--cian); }
         .btn-add { background: var(--cian); color: black; font-weight: bold; width: 100%; border: none; padding: 10px; border-radius: 4px; margin-top: 5px; }
         .btn-delete { color: #ff4d4d; background: none; border: none; font-size: 12px; position: absolute; top: 10px; right: 10px; }
 
@@ -162,16 +163,16 @@
                 <div id="login-trigger" style="font-size: 10px; opacity: 0.3; text-align: right; margin-bottom: 10px;" onclick="promptLogin()">Admin Access</div>
                 
                 <div class="objetos-lista" id="lista-objetos">
-                    <!-- Los objetos se cargan aquí -->
+                    <!-- Los objetos aparecerán aquí -->
                 </div>
 
-                <!-- Panel Admin (Solo visible para Dylan) -->
+                <!-- Panel Admin (Solo Dylan) -->
                 <div id="admin-panel">
-                    <h3 style="color: var(--cian); font-size: 14px; margin-bottom: 10px;">Publicar nuevo objeto</h3>
+                    <h3 style="color: var(--cian); font-size: 14px; margin-bottom: 10px; border-top: 1px solid rgba(255,255,255,0.1); pt-10">Publicar nuevo objeto</h3>
                     <input type="text" id="add-nombre" class="admin-input" placeholder="Nombre del objeto">
-                    <input type="text" id="add-codigo" class="admin-input" placeholder="Código (ej: LIB-01)">
-                    <textarea id="add-desc" class="admin-input" placeholder="Descripción detallada"></textarea>
-                    <button class="btn-add" onclick="subirObjeto()">Publicar en Catálogo</button>
+                    <input type="text" id="add-codigo" class="admin-input" placeholder="Código">
+                    <textarea id="add-desc" class="admin-input" placeholder="Descripción"></textarea>
+                    <button class="btn-add" onclick="subirObjeto()">Publicar Objeto</button>
                 </div>
             </div>
             <div class="win-footer">
@@ -181,11 +182,8 @@
     </div>
 
     <script>
-        // --- BASE DE DATOS LOCAL ---
-        let objetos = JSON.parse(localStorage.getItem('duo_objetos')) || [
-            {nombre: "Cuaderno A4", codigo: "LIB-001", desc: "Tapa dura, 100 hojas rayadas."},
-            {nombre: "Auriculares Bluetooth", codigo: "TEC-042", desc: "Alta fidelidad, batería 20hs."}
-        ];
+        // --- BASE DE DATOS LOCAL (VACÍA POR DEFECTO) ---
+        let objetos = JSON.parse(localStorage.getItem('duo_objetos')) || [];
         let esAdmin = false;
 
         const info = {
@@ -194,32 +192,35 @@
             tecno: { title: "Rubro: Tecnología", desc: "Periféricos y accesorios de alta velocidad." }
         };
 
-        // --- LÓGICA DE VENTANAS ---
+        // --- VENTANAS ---
         function openWin(key) {
             document.getElementById('winTitle').innerText = info[key].title;
             document.getElementById('winDesc').innerText = info[key].desc;
             document.getElementById('winOverlay').classList.add('active');
         }
-
         function closeWin() { document.getElementById('winOverlay').classList.remove('active'); }
 
         function openStore() {
             renderObjetos();
             document.getElementById('winStore').classList.add('active');
         }
-
         function closeStore() { document.getElementById('winStore').classList.remove('active'); }
 
-        // --- LÓGICA DE OBJETOS ---
+        // --- RENDER DE OBJETOS ---
         function renderObjetos() {
             const contenedor = document.getElementById('lista-objetos');
             contenedor.innerHTML = '';
+
+            if (objetos.length === 0) {
+                contenedor.innerHTML = '<p style="text-align:center; opacity:0.5; padding:20px;">No hay objetos en el catálogo.</p>';
+                return;
+            }
 
             objetos.forEach((obj, index) => {
                 const card = document.createElement('div');
                 card.className = 'obj-card';
                 card.onclick = () => {
-                    const slug = obj.nombre.toLowerCase().replace(/ /g, "-");
+                    const slug = obj.nombre.toLowerCase().trim().replace(/\s+/g, "-");
                     window.location.href = window.location.origin + "/" + slug;
                 };
 
@@ -233,17 +234,17 @@
             });
         }
 
-        // --- SISTEMA ADMIN (DYLAN) ---
+        // --- ADMIN LOGIN (Dylan2408R / 2702) ---
         function promptLogin() {
             const user = prompt("Usuario:");
             const pass = prompt("Contraseña:");
             if(user === "Dylan2408R" && pass === "2702") {
                 esAdmin = true;
                 document.getElementById('admin-panel').style.display = 'block';
-                document.getElementById('login-trigger').innerText = "MODO ADMINISTRADOR ACTIVO";
+                document.getElementById('login-trigger').innerHTML = '<i class="fas fa-lock-open"></i> MODO ADMINISTRADOR ACTIVO';
                 renderObjetos();
             } else {
-                alert("Acceso denegado");
+                alert("Usuario o contraseña incorrectos.");
             }
         }
 
@@ -256,15 +257,18 @@
                 objetos.push({nombre, codigo, desc});
                 localStorage.setItem('duo_objetos', JSON.stringify(objetos));
                 renderObjetos();
+                // Limpiar campos
                 document.getElementById('add-nombre').value = '';
                 document.getElementById('add-codigo').value = '';
                 document.getElementById('add-desc').value = '';
+            } else {
+                alert("Por favor rellena todos los campos.");
             }
         }
 
         function eliminarObjeto(e, index) {
             e.stopPropagation();
-            if(confirm("¿Eliminar este objeto?")) {
+            if(confirm("¿Estás seguro de eliminar este objeto?")) {
                 objetos.splice(index, 1);
                 localStorage.setItem('duo_objetos', JSON.stringify(objetos));
                 renderObjetos();
@@ -289,25 +293,24 @@
         }
         animate();
 
-        // Hover interactivo para el cursor
+        // Hover interactivo
         function refreshCursorInteractions() {
-            document.querySelectorAll('.item, .win-btn, .obj-card, .btn-add, .fas').forEach(el => {
+            document.querySelectorAll('.item, .win-btn, .obj-card, .btn-add, .fas, .admin-input').forEach(el => {
                 el.addEventListener('mouseenter', () => { 
-                    cursor.style.width = '60px'; cursor.style.height = '60px'; 
-                    cursor.style.borderRadius = '50%'; cursor.style.backgroundColor = 'rgba(0, 188, 201, 0.5)';
+                    cursor.style.width = '55px'; cursor.style.height = '55px'; 
+                    cursor.style.borderRadius = '50%';
                 });
                 el.addEventListener('mouseleave', () => { 
                     cursor.style.width = '35px'; cursor.style.height = '35px'; 
-                    cursor.style.borderRadius = '10px'; cursor.style.backgroundColor = 'var(--cian)';
+                    cursor.style.borderRadius = '10px';
                 });
             });
         }
         refreshCursorInteractions();
         
-        // Observador para nuevos elementos (como las cards de objetos)
+        // Observador para nuevos objetos dinámicos
         const observer = new MutationObserver(refreshCursorInteractions);
         observer.observe(document.body, { childList: true, subtree: true });
-
     </script>
 </body>
 </html>
