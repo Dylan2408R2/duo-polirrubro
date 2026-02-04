@@ -4,106 +4,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dúo Polirrubro - Showroom</title>
-    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="icon" type="image/png" href="favicon.png">
     
     <style>
-        :root { --primary: #2563eb; --bg: #f1f5f9; --text: #1e293b; }
-        body { font-family: system-ui, sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; color: var(--text); }
+        :root { --bg: #ededed; --white: #ffffff; --blue: #3483fa; --green: #00a650; --text: #333; --text-light: #666; }
+        
+        body { font-family: "Proxima Nova", -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; background: var(--bg); margin: 0; color: var(--text); }
         
         /* HEADER */
-        header { background: white; padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; align-items: center; }
-        header img { height: 45px; margin-right: 15px; }
-        header h1 { font-size: 1.3rem; margin: 0; }
+        header { background: #fff159; padding: 10px 20px; display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        header img { height: 40px; margin-right: 15px; }
+        header h1 { font-size: 1.2rem; margin: 0; color: #333; }
+
+        /* GRILLA PRINCIPAL */
+        .container-fluid { width: 100%; padding: 20px; box-sizing: border-box; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
         
-        /* GRID */
-        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-        
-        /* TARJETA */
-        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; transition: 0.2s; border: 1px solid #e2e8f0; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-        .card-img { width: 100%; height: 180px; object-fit: cover; }
-        .card-body { padding: 12px; }
-        .card-price { color: #059669; font-weight: 800; font-size: 1.1rem; }
+        .card { background: var(--white); border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.2s; border: 1px solid #ddd; }
+        .card:hover { box-shadow: 0 7px 15px rgba(0,0,0,0.1); }
+        .card-img { width: 100%; height: 250px; object-fit: contain; background: #fff; padding: 10px; box-sizing: border-box; }
+        .card-body { padding: 15px; border-top: 1px solid #eee; }
+        .card-price { font-size: 1.4rem; font-weight: 400; display: block; margin-bottom: 5px; }
+        .card-title { font-size: 0.9rem; color: var(--text-light); }
         
         .data-oculta { display: none; }
 
-        /* MODAL */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; overflow-y: auto; }
-        .modal-content { background: white; margin: 20px auto; width: 95%; max-width: 850px; border-radius: 16px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
-        @media(min-width: 768px) { .modal-content { flex-direction: row; margin: 50px auto; } }
-
-        .modal-media { background: #000; flex: 1.2; display: flex; align-items: center; justify-content: center; min-height: 300px; }
-        .modal-media img, .modal-media video { max-width: 100%; max-height: 80vh; }
+        /* MODAL ESTILO MERCADO LIBRE */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 2000; overflow-y: auto; }
+        .modal-container { display: flex; flex-direction: column; max-width: 1200px; margin: 0 auto; padding: 40px 20px; position: relative; }
         
-        .modal-info { flex: 1; padding: 25px; overflow-y: auto; }
-        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 35px; cursor: pointer; color: #fff; z-index: 100; text-shadow: 0 0 5px #000; }
-        @media(min-width: 768px) { .close-btn { color: #333; text-shadow: none; } }
+        @media(min-width: 900px) {
+            .modal-container { flex-direction: row; gap: 40px; }
+            .col-left { flex: 1.5; }
+            .col-right { flex: 1; border: 1px solid #ddd; border-radius: 8px; padding: 25px; height: fit-content; }
+        }
 
-        .btn-ws { display: block; background: #25D366; color: white; text-align: center; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold; margin: 20px 0; }
+        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 40px; cursor: pointer; color: var(--blue); z-index: 2100; }
+
+        /* Columna Izquierda: Visual */
+        .main-media { width: 100%; height: 500px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .main-media img, .main-media video { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        /* Columna Derecha: Info */
+        .m-codigo { color: rgba(0,0,0,.55); font-size: 14px; margin-bottom: 8px; }
+        .m-titulo { font-size: 22px; font-weight: 600; line-height: 1.18; margin-bottom: 15px; }
+        .m-precio { font-size: 36px; font-weight: 300; margin-bottom: 20px; color: var(--text); }
+        
+        .m-desc-title { font-size: 20px; margin-bottom: 15px; font-weight: 400; }
+        .m-desc-content { font-size: 16px; color: var(--text-light); line-height: 1.4; white-space: pre-line; }
+
+        /* Botón WhatsApp Estilo ML */
+        .btn-ws { 
+            display: block; 
+            background: var(--blue); 
+            color: white; 
+            text-align: center; 
+            padding: 15px; 
+            border-radius: 6px; 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 16px;
+            margin: 20px 0;
+            transition: 0.2s;
+        }
+        .btn-ws:hover { background: #2968c8; }
+
+        /* Tags Estilo ML */
+        .tag { display: inline-block; background: #f5f5f5; color: var(--blue); padding: 5px 10px; border-radius: 5px; font-size: 13px; margin: 5px; font-weight: 600; }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="logo.png" onerror="this.src='https://via.placeholder.com/45?text=DÚO'" alt="Logo">
-    <h1>Dúo Polirrubro Showroom</h1>
+    <img src="logo.png" onerror="this.src='https://via.placeholder.com/40x40?text=D'">
+    <h1>Dúo Polirrubro</h1>
 </header>
 
-<div class="container">
+<div class="container-fluid">
     <div class="grid" id="mainGrid">
 
-        <!-- EL BLOQUE DE PRODUCTO SE PEGA AQUÍ ABAJO -->
-
-        <!-- Ejemplo 1 -->
+        <!-- ITEM EJEMPLO -->
         <div class="card" onclick="verProducto(this)">
-            <img src="producto1.jpg" class="card-img" onerror="">
+            <img src="pack-panos.jpg" class="card-img" onerror="this.src='https://via.placeholder.com/400x400?text=Imagen+Producto'">
             <div class="card-body">
-                <div class="card-title">Botella negra</div>
-                <div class="card-price">$8.500</div>
+                <span class="card-price">$ 7.500</span>
+                <div class="card-title">Pack 4 Paños Microfibra Multiuso Limpieza Auto Hogar</div>
             </div>
             <div class="data-oculta">
-                <div class="d-codigo">Sin codigo</div>
-                <div class="d-video"></div> <!-- Vacío si no hay video -->
-                <div class="d-desc">Una botella negra ideal para salir a caminar</div>
-                <div class="d-recos">Botella, Negro, Blanco y negro, Botellas, Minimalista</div>
+                <div class="d-codigo">CÓDIGO: #12345678</div>
+                <div class="d-video"></div> 
+                <div class="d-desc">
+                    • Unidades por pack: 4.
+                    • Material: Microfibra absorbente.
+                    • Antibacteriano para proteger tu salud.
+                    • Ideal para auto, hogar y oficina.
+                </div>
+                <div class="d-recos">Limpieza, Hogar, Oferta, Microfibra</div>
             </div>
         </div>
+
+        <!-- AQUÍ PEGAS MÁS ITEMS -->
 
     </div>
 </div>
 
-            <!-- Ejemplo 1 -->
-        <div class="card" onclick="verProducto(this)">
-            <img src="producto1.jpg" class="card-img" onerror="">
-            <div class="card-body">
-                <div class="card-title">Botella blanca</div>
-                <div class="card-price">$8.500</div>
-            </div>
-            <div class="data-oculta">
-                <div class="d-codigo">Sin codigo</div>
-                <div class="d-video"></div> <!-- Vacío si no hay video -->
-                <div class="d-desc">Una botella blanca ideal para salir a caminar</div>
-                <div class="d-recos">Botella, Blanco, Blanco y negro, Botellas, Minimalista</div>
-            </div>
-        </div>
-
-    </div>
-</div>
+<!-- MODAL ESTILO MERCADO LIBRE -->
+<div id="modalML" class="modal">
+    <span class="close-btn" onclick="cerrarModal()">&times;</span>
     
-<!-- VENTANA EMERGENTE -->
-<div id="modalShowroom" class="modal" onclick="if(event.target.id==='modalShowroom') cerrarModal()">
-    <div class="modal-content">
-        <span class="close-btn" onclick="cerrarModal()">&times;</span>
-        <div class="modal-media" id="mMedia"></div>
-        <div class="modal-info">
-            <small id="mCodigo" style="background:#eee; padding:2px 5px;"></small>
-            <h2 id="mTitulo" style="margin:10px 0;"></h2>
-            <h3 id="mPrecio" style="color:#059669; margin:0;"></h3>
-            <div id="mDesc" style="margin:20px 0; line-height:1.5;"></div>
-            <a id="mBtnWs" href="#" target="_blank" class="btn-ws">Pedir por WhatsApp</a>
-            <p><strong>También recomendado:</strong></p>
-            <div id="mRecos" style="font-style: italic; color: #666;"></div>
+    <div class="modal-container">
+        <!-- LADO IZQUIERDO -->
+        <div class="col-left">
+            <div class="main-media" id="mMedia"></div>
+            
+            <div style="padding: 20px 0;">
+                <h3 class="m-desc-title">Lo que tenés que saber de este producto</h3>
+                <div id="mDesc" class="m-desc-content"></div>
+            </div>
+        </div>
+
+        <!-- LADO DERECHO -->
+        <div class="col-right">
+            <div id="mCodigo" class="m-codigo"></div>
+            <h2 id="mTitulo" class="m-titulo"></h2>
+            <div id="mPrecio" class="m-precio"></div>
+            
+            <p style="color: var(--green); font-size: 14px; font-weight: 600;">Llega mañana</p>
+            <p style="color: var(--text-light); font-size: 14px;">Stock disponible</p>
+
+            <a id="mBtnWs" href="#" target="_blank" class="btn-ws">Consultar disponibilidad</a>
+
+            <div style="margin-top: 20px;">
+                <p style="font-size: 14px; font-weight: 600;">Tags relacionados:</p>
+                <div id="mRecos"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -117,30 +151,41 @@
         
         document.getElementById('mTitulo').innerText = titulo;
         document.getElementById('mPrecio').innerText = precio;
-        document.getElementById('mCodigo').innerText = "CÓDIGO: " + oculta.querySelector('.d-codigo').innerText;
-        document.getElementById('mDesc').innerHTML = oculta.querySelector('.d-desc').innerHTML;
-        document.getElementById('mRecos').innerText = oculta.querySelector('.d-recos').innerText;
+        document.getElementById('mCodigo').innerText = oculta.querySelector('.d-codigo').innerText;
+        document.getElementById('mDesc').innerText = oculta.querySelector('.d-desc').innerText;
 
+        // Tags
+        const recosTexto = oculta.querySelector('.d-recos').innerText;
+        const recosDiv = document.getElementById('mRecos');
+        recosDiv.innerHTML = '';
+        recosTexto.split(',').forEach(t => {
+            if(t.trim()) recosDiv.innerHTML += `<span class="tag">${t.trim()}</span>`;
+        });
+
+        // Media
         const video = oculta.querySelector('.d-video').innerText.trim();
         const mediaDiv = document.getElementById('mMedia');
         if (video) {
-            mediaDiv.innerHTML = `<video controls autoplay loop style="width:100%"><source src="${video}" type="video/mp4"></video>`;
+            mediaDiv.innerHTML = `<video controls autoplay loop><source src="${video}" type="video/mp4"></video>`;
         } else {
             mediaDiv.innerHTML = `<img src="${imgSrc}">`;
         }
 
-        const wsMsg = `Hola Dúo! Me interesa: ${titulo} (Cod: ${oculta.querySelector('.d-codigo').innerText})`;
+        // WhatsApp
+        const wsMsg = `Hola Dúo Polirrubro! Me interesa: ${titulo} (${oculta.querySelector('.d-codigo').innerText})`;
         document.getElementById('mBtnWs').href = `https://wa.me/5491100000000?text=${encodeURIComponent(wsMsg)}`;
 
-        document.getElementById('modalShowroom').style.display = 'block';
+        document.getElementById('modalML').style.display = 'block';
         document.body.style.overflow = 'hidden';
     }
 
     function cerrarModal() {
-        document.getElementById('modalShowroom').style.display = 'none';
+        document.getElementById('modalML').style.display = 'none';
         document.getElementById('mMedia').innerHTML = '';
         document.body.style.overflow = 'auto';
     }
+
+    document.addEventListener('keydown', (e) => { if(e.key === "Escape") cerrarModal(); });
 </script>
 
 </body>
