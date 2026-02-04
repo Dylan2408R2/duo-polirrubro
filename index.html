@@ -3,314 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUO Polirrubro | Sistema 2026</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Dúo Polirrubro - Showroom</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
     <style>
-        :root {
-            --cian: #00bcc9;
-            --oscuro: #0a2e38;
-            --win-bg: rgba(32, 32, 32, 0.9);
-            --win-border: rgba(255, 255, 255, 0.1);
-            --win-accent: #0078d4;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
-
-        body { 
-            font-family: 'Segoe UI Variable', 'Segoe UI', sans-serif; 
-            background-color: var(--oscuro); 
-            color: white;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* --- CURSOR JELLY --- */
-        #jelly-cursor {
-            width: 35px; height: 35px; background-color: var(--cian);
-            position: fixed; top: 0; left: 0; z-index: 10000;
-            pointer-events: none; border-radius: 10px;
-            mix-blend-mode: difference;
-            transition: width 0.2s, height 0.2s;
-        }
-
-        /* --- INTERFAZ PRINCIPAL --- */
-        .logo-img { width: 180px; margin-bottom: 20px; animation: float 6s ease-in-out infinite; }
+        :root { --primary: #2563eb; --bg: #f1f5f9; --text: #1e293b; }
+        body { font-family: system-ui, sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; color: var(--text); }
         
-        .items-grid { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; max-width: 900px; }
-
-        .item {
-            background: rgba(255,255,255,0.05);
-            padding: 15px 30px;
-            border-radius: 12px;
-            border: 1px solid var(--win-border);
-            text-align: center;
-            transition: 0.3s;
-        }
-        .item:hover { background: rgba(255,255,255,0.1); border-color: var(--cian); transform: scale(1.05); }
+        /* HEADER */
+        header { background: white; padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; align-items: center; }
+        header img { height: 45px; margin-right: 15px; }
+        header h1 { font-size: 1.3rem; margin: 0; }
         
-        /* Botón Ver Objetos */
-        .item-ver { border: 1px solid var(--cian); background: rgba(0, 188, 201, 0.1); }
+        /* GRID */
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        
+        /* TARJETA */
+        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; transition: 0.2s; border: 1px solid #e2e8f0; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .card-img { width: 100%; height: 180px; object-fit: cover; }
+        .card-body { padding: 12px; }
+        .card-price { color: #059669; font-weight: 800; font-size: 1.1rem; }
+        
+        .data-oculta { display: none; }
 
-        /* --- VENTANAS --- */
-        .win-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            display: none; justify-content: center; align-items: center;
-            z-index: 9000; backdrop-filter: blur(5px);
-        }
+        /* MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; overflow-y: auto; }
+        .modal-content { background: white; margin: 20px auto; width: 95%; max-width: 850px; border-radius: 16px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        @media(min-width: 768px) { .modal-content { flex-direction: row; margin: 50px auto; } }
 
-        .win-dialog {
-            width: 500px; max-height: 85vh;
-            background: var(--win-bg);
-            backdrop-filter: blur(25px) saturate(150%);
-            border: 1px solid var(--win-border);
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            display: flex; flex-direction: column;
-            transform: scale(0.9); opacity: 0;
-            transition: 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
-        }
+        .modal-media { background: #000; flex: 1.2; display: flex; align-items: center; justify-content: center; min-height: 300px; }
+        .modal-media img, .modal-media video { max-width: 100%; max-height: 80vh; }
+        
+        .modal-info { flex: 1; padding: 25px; overflow-y: auto; }
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 35px; cursor: pointer; color: #fff; z-index: 100; text-shadow: 0 0 5px #000; }
+        @media(min-width: 768px) { .close-btn { color: #333; text-shadow: none; } }
 
-        .win-overlay.active { display: flex; }
-        .win-overlay.active .win-dialog { transform: scale(1); opacity: 1; }
-
-        .win-header { padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; border-bottom: 1px solid var(--win-border); }
-        .win-body { padding: 20px; overflow-y: auto; flex-grow: 1; }
-
-        /* Estilos Inventario */
-        .objetos-lista { display: grid; gap: 10px; margin-top: 15px; }
-        .obj-card { 
-            background: rgba(255,255,255,0.05); border-radius: 8px; padding: 12px; 
-            border: 1px solid transparent; transition: 0.2s; position: relative;
-        }
-        .obj-card:hover { border-color: var(--cian); background: rgba(255,255,255,0.1); }
-        .obj-card h4 { color: var(--cian); margin-bottom: 4px; }
-        .obj-card span { font-size: 11px; opacity: 0.6; display: block; }
-        .obj-card p { font-size: 13px; margin-top: 5px; color: #ccc; }
-
-        /* Panel Admin */
-        #admin-panel { border-top: 1px solid var(--cian); margin-top: 20px; padding-top: 15px; display: none; }
-        .admin-input { 
-            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--win-border); 
-            padding: 8px; color: white; margin-bottom: 8px; border-radius: 4px; outline: none;
-        }
-        .admin-input:focus { border-color: var(--cian); }
-        .btn-add { background: var(--cian); color: black; font-weight: bold; width: 100%; border: none; padding: 10px; border-radius: 4px; margin-top: 5px; }
-        .btn-delete { color: #ff4d4d; background: none; border: none; font-size: 12px; position: absolute; top: 10px; right: 10px; }
-
-        /* Footer */
-        .win-footer { background: rgba(0,0,0,0.2); padding: 15px; text-align: right; border-top: 1px solid var(--win-border); }
-        .win-btn { background: var(--win-accent); color: white; border: none; padding: 7px 25px; border-radius: 4px; font-size: 14px; }
-
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-        @media (max-width: 768px) {
-            #jelly-cursor { display: none; }
-            * { cursor: auto !important; }
-            .items-grid { flex-direction: column; padding: 20px; }
-            .win-dialog { width: 95%; }
-        }
+        .btn-ws { display: block; background: #25D366; color: white; text-align: center; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold; margin: 20px 0; }
     </style>
 </head>
 <body>
 
-    <div id="jelly-cursor"></div>
+<header>
+    <img src="logo.png" onerror="this.src='https://via.placeholder.com/45?text=DÚO'" alt="Logo">
+    <h1>Dúo Polirrubro Showroom</h1>
+</header>
 
-    <img src="logo.png" alt="DUO" class="logo-img">
-    <h1 style="margin-bottom: 40px; font-weight: 300; text-align: center;">DUO <span style="font-weight: 800; color: var(--cian);">POLIRRUBRO</span></h1>
+<div class="container">
+    <div class="grid" id="mainGrid">
 
-    <div class="items-grid">
-        <div class="item" onclick="openWin('libreria')">Librería</div>
-        <div class="item" onclick="openWin('regaleria')">Regalería</div>
-        <div class="item" onclick="openWin('tecno')">Tecno</div>
-        <div class="item item-ver" onclick="openStore()">
-            <i class="fas fa-boxes"></i> Ver objetos
-        </div>
-    </div>
+        <!-- EL BLOQUE DE PRODUCTO SE PEGA AQUÍ ABAJO -->
 
-    <!-- VENTANA DE INFORMACIÓN GENERAL -->
-    <div class="win-overlay" id="winOverlay" onclick="closeWin()">
-        <div class="win-dialog" onclick="event.stopPropagation()">
-            <div class="win-header">
-                <span>Info Duo polirrubro</span>
-                <i class="fas fa-times" onclick="closeWin()"></i>
+        <!-- Ejemplo 1 -->
+        <div class="card" onclick="verProducto(this)">
+            <img src="producto1.jpg" class="card-img" onerror="">
+            <div class="card-body">
+                <div class="card-title">Botella negra</div>
+                <div class="card-price">$8.500</div>
             </div>
-            <div class="win-body" style="display:flex; gap:20px;">
-                <div style="width:45px; height:45px; background:var(--win-accent); border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; flex-shrink:0;">i</div>
-                <div>
-                    <h2 id="winTitle" style="font-size:18px; margin-bottom:8px;">Título</h2>
-                    <p id="winDesc" style="font-size:14px; color:#ccc; line-height:1.4;">Descripción...</p>
-                </div>
-            </div>
-            <div class="win-footer">
-                <button class="win-btn" onclick="closeWin()">Aceptar</button>
+            <div class="data-oculta">
+                <div class="d-codigo">Sin codigo</div>
+                <div class="d-video"></div> <!-- Vacío si no hay video -->
+                <div class="d-desc">Una botella negra ideal para salir a caminar</div>
+                <div class="d-recos">Botella, Negro, Blanco y negro, Botellas, Minimalista</div>
             </div>
         </div>
+
     </div>
+</div>
 
-    <!-- VENTANA DE INVENTARIO (STORE) -->
-    <div class="win-overlay" id="winStore" onclick="closeStore()">
-        <div class="win-dialog" style="width: 600px;" onclick="event.stopPropagation()">
-            <div class="win-header">
-                <span>Catálogo de Objetos - DUO 2026</span>
-                <i class="fas fa-times" onclick="closeStore()"></i>
+            <!-- Ejemplo 1 -->
+        <div class="card" onclick="verProducto(this)">
+            <img src="producto1.jpg" class="card-img" onerror="">
+            <div class="card-body">
+                <div class="card-title">Botella blanca</div>
+                <div class="card-price">$8.500</div>
             </div>
-            <div class="win-body">
-                <div id="login-trigger" style="font-size: 10px; opacity: 0.3; text-align: right; margin-bottom: 10px;" onclick="promptLogin()">Admin Access</div>
-                
-                <div class="objetos-lista" id="lista-objetos">
-                    <!-- Los objetos aparecerán aquí -->
-                </div>
-
-                <!-- Panel Admin (Solo Dylan) -->
-                <div id="admin-panel">
-                    <h3 style="color: var(--cian); font-size: 14px; margin-bottom: 10px; border-top: 1px solid rgba(255,255,255,0.1); pt-10">Publicar nuevo objeto</h3>
-                    <input type="text" id="add-nombre" class="admin-input" placeholder="Nombre del objeto">
-                    <input type="text" id="add-codigo" class="admin-input" placeholder="Código">
-                    <textarea id="add-desc" class="admin-input" placeholder="Descripción"></textarea>
-                    <button class="btn-add" onclick="subirObjeto()">Publicar Objeto</button>
-                </div>
-            </div>
-            <div class="win-footer">
-                <button class="win-btn" onclick="closeStore()">Cerrar</button>
+            <div class="data-oculta">
+                <div class="d-codigo">Sin codigo</div>
+                <div class="d-video"></div> <!-- Vacío si no hay video -->
+                <div class="d-desc">Una botella blanca ideal para salir a caminar</div>
+                <div class="d-recos">Botella, Blanco, Blanco y negro, Botellas, Minimalista</div>
             </div>
         </div>
+
     </div>
+</div>
+    
+<!-- VENTANA EMERGENTE -->
+<div id="modalShowroom" class="modal" onclick="if(event.target.id==='modalShowroom') cerrarModal()">
+    <div class="modal-content">
+        <span class="close-btn" onclick="cerrarModal()">&times;</span>
+        <div class="modal-media" id="mMedia"></div>
+        <div class="modal-info">
+            <small id="mCodigo" style="background:#eee; padding:2px 5px;"></small>
+            <h2 id="mTitulo" style="margin:10px 0;"></h2>
+            <h3 id="mPrecio" style="color:#059669; margin:0;"></h3>
+            <div id="mDesc" style="margin:20px 0; line-height:1.5;"></div>
+            <a id="mBtnWs" href="#" target="_blank" class="btn-ws">Pedir por WhatsApp</a>
+            <p><strong>También recomendado:</strong></p>
+            <div id="mRecos" style="font-style: italic; color: #666;"></div>
+        </div>
+    </div>
+</div>
 
-    <script>
-        // --- BASE DE DATOS LOCAL (VACÍA POR DEFECTO) ---
-        let objetos = JSON.parse(localStorage.getItem('duo_objetos')) || [];
-        let esAdmin = false;
-
-        const info = {
-            libreria: { title: "Rubro: Librería", desc: "Útiles escolares y técnicos. Listas completas 2026." },
-            regaleria: { title: "Rubro: Regalería", desc: "Bazar, peluches y objetos de diseño." },
-            tecno: { title: "Rubro: Tecnología", desc: "Periféricos y accesorios de alta velocidad." }
-        };
-
-        // --- VENTANAS ---
-        function openWin(key) {
-            document.getElementById('winTitle').innerText = info[key].title;
-            document.getElementById('winDesc').innerText = info[key].desc;
-            document.getElementById('winOverlay').classList.add('active');
-        }
-        function closeWin() { document.getElementById('winOverlay').classList.remove('active'); }
-
-        function openStore() {
-            renderObjetos();
-            document.getElementById('winStore').classList.add('active');
-        }
-        function closeStore() { document.getElementById('winStore').classList.remove('active'); }
-
-        // --- RENDER DE OBJETOS ---
-        function renderObjetos() {
-            const contenedor = document.getElementById('lista-objetos');
-            contenedor.innerHTML = '';
-
-            if (objetos.length === 0) {
-                contenedor.innerHTML = '<p style="text-align:center; opacity:0.5; padding:20px;">No hay objetos en el catálogo.</p>';
-                return;
-            }
-
-            objetos.forEach((obj, index) => {
-                const card = document.createElement('div');
-                card.className = 'obj-card';
-                card.onclick = () => {
-                    const slug = obj.nombre.toLowerCase().trim().replace(/\s+/g, "-");
-                    window.location.href = window.location.origin + "/" + slug;
-                };
-
-                card.innerHTML = `
-                    <span>CÓDIGO: ${obj.codigo}</span>
-                    <h4>${obj.nombre}</h4>
-                    <p>${obj.desc}</p>
-                    ${esAdmin ? `<button class="btn-delete" onclick="eliminarObjeto(event, ${index})"><i class="fas fa-trash"></i></button>` : ''}
-                `;
-                contenedor.appendChild(card);
-            });
-        }
-
-        // --- ADMIN LOGIN (Dylan2408R / 2702) ---
-        function promptLogin() {
-            const user = prompt("Usuario:");
-            const pass = prompt("Contraseña:");
-            if(user === "Dylan2408R" && pass === "2702") {
-                esAdmin = true;
-                document.getElementById('admin-panel').style.display = 'block';
-                document.getElementById('login-trigger').innerHTML = '<i class="fas fa-lock-open"></i> MODO ADMINISTRADOR ACTIVO';
-                renderObjetos();
-            } else {
-                alert("Usuario o contraseña incorrectos.");
-            }
-        }
-
-        function subirObjeto() {
-            const nombre = document.getElementById('add-nombre').value;
-            const codigo = document.getElementById('add-codigo').value;
-            const desc = document.getElementById('add-desc').value;
-
-            if(nombre && codigo && desc) {
-                objetos.push({nombre, codigo, desc});
-                localStorage.setItem('duo_objetos', JSON.stringify(objetos));
-                renderObjetos();
-                // Limpiar campos
-                document.getElementById('add-nombre').value = '';
-                document.getElementById('add-codigo').value = '';
-                document.getElementById('add-desc').value = '';
-            } else {
-                alert("Por favor rellena todos los campos.");
-            }
-        }
-
-        function eliminarObjeto(e, index) {
-            e.stopPropagation();
-            if(confirm("¿Estás seguro de eliminar este objeto?")) {
-                objetos.splice(index, 1);
-                localStorage.setItem('duo_objetos', JSON.stringify(objetos));
-                renderObjetos();
-            }
-        }
-
-        // --- CURSOR JELLY ---
-        const cursor = document.getElementById('jelly-cursor');
-        let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
-
-        window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
-
-        function animate() {
-            let distX = mouseX - cursorX;
-            let distY = mouseY - cursorY;
-            cursorX += distX * 0.15;
-            cursorY += distY * 0.15;
-            let speed = Math.sqrt(distX*distX + distY*distY);
-            let rotation = Math.atan2(distY, distX) * 180 / Math.PI;
-            cursor.style.transform = `translate3d(${cursorX - 17}px, ${cursorY - 17}px, 0) rotate(${rotation}deg) scale(${1+(speed/100)}, ${1-(speed/150)})`;
-            requestAnimationFrame(animate);
-        }
-        animate();
-
-        // Hover interactivo
-        function refreshCursorInteractions() {
-            document.querySelectorAll('.item, .win-btn, .obj-card, .btn-add, .fas, .admin-input').forEach(el => {
-                el.addEventListener('mouseenter', () => { 
-                    cursor.style.width = '55px'; cursor.style.height = '55px'; 
-                    cursor.style.borderRadius = '50%';
-                });
-                el.addEventListener('mouseleave', () => { 
-                    cursor.style.width = '35px'; cursor.style.height = '35px'; 
-                    cursor.style.borderRadius = '10px';
-                });
-            });
-        }
-        refreshCursorInteractions();
+<script>
+    function verProducto(card) {
+        const imgSrc = card.querySelector('.card-img').src;
+        const titulo = card.querySelector('.card-title').innerText;
+        const precio = card.querySelector('.card-price').innerText;
+        const oculta = card.querySelector('.data-oculta');
         
-        // Observador para nuevos objetos dinámicos
-        const observer = new MutationObserver(refreshCursorInteractions);
-        observer.observe(document.body, { childList: true, subtree: true });
-    </script>
+        document.getElementById('mTitulo').innerText = titulo;
+        document.getElementById('mPrecio').innerText = precio;
+        document.getElementById('mCodigo').innerText = "CÓDIGO: " + oculta.querySelector('.d-codigo').innerText;
+        document.getElementById('mDesc').innerHTML = oculta.querySelector('.d-desc').innerHTML;
+        document.getElementById('mRecos').innerText = oculta.querySelector('.d-recos').innerText;
+
+        const video = oculta.querySelector('.d-video').innerText.trim();
+        const mediaDiv = document.getElementById('mMedia');
+        if (video) {
+            mediaDiv.innerHTML = `<video controls autoplay loop style="width:100%"><source src="${video}" type="video/mp4"></video>`;
+        } else {
+            mediaDiv.innerHTML = `<img src="${imgSrc}">`;
+        }
+
+        const wsMsg = `Hola Dúo! Me interesa: ${titulo} (Cod: ${oculta.querySelector('.d-codigo').innerText})`;
+        document.getElementById('mBtnWs').href = `https://wa.me/5491100000000?text=${encodeURIComponent(wsMsg)}`;
+
+        document.getElementById('modalShowroom').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalShowroom').style.display = 'none';
+        document.getElementById('mMedia').innerHTML = '';
+        document.body.style.overflow = 'auto';
+    }
+</script>
+
 </body>
 </html>
